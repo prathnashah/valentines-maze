@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Valentine's Maze 💕</title>
+    <style>
+        body {
+            text-align: center;
+            font-family: Arial, sans-serif;
+        }
+        .maze {
+            display: grid;
+            grid-template-columns: repeat(5, 50px);
+            gap: 5px;
+            margin: 20px auto;
+            width: max-content;
+        }
+        .cell {
+            width: 50px;
+            height: 50px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 24px;
+            border: 1px solid #ccc;
+            background-color: white;
+        }
+        .wall {
+            background-color: #ffccd5;
+        }
+        .player {
+            background-color: #ff66b2;
+        }
+        .goal {
+            background-color: #ff99cc;
+        }
+    </style>
+</head>
+<body>
+
+    <h1>Valentine's Maze 💕</h1>
+    <p>Use arrow keys to reach your Valentine! 💘</p>
+
+    <div id="maze" class="maze"></div>
+    <p id="message" style="font-size: 20px; font-weight: bold;"></p>
+
+    <script>
+        const mazeLayout = [
+            ['💖', '', '🚧', '', ''],
+            ['🚧', '', '', '', '🚧'],
+            ['', '', '', '🚧', ''],
+            ['🚧', '🚧', '', '🚧', ''],
+            ['', '', '', '', '💘']
+        ];
+
+        const rows = mazeLayout.length;
+        const cols = mazeLayout[0].length;
+        let playerPos = { row: 0, col: 0 };
+
+        function renderMaze() {
+            const mazeDiv = document.getElementById('maze');
+            mazeDiv.innerHTML = '';
+
+            mazeLayout.forEach((row, r) => {
+                row.forEach((cell, c) => {
+                    const div = document.createElement('div');
+                    div.classList.add('cell');
+                    if (r === playerPos.row && c === playerPos.col) {
+                        div.textContent = '💖';
+                        div.classList.add('player');
+                    } else if (cell === '🚧') {
+                        div.textContent = '🚧';
+                        div.classList.add('wall');
+                    } else if (cell === '💘') {
+                        div.textContent = '💘';
+                        div.classList.add('goal');
+                    }
+                    mazeDiv.appendChild(div);
+                });
+            });
+        }
+
+        function movePlayer(rowOffset, colOffset) {
+            const newRow = playerPos.row + rowOffset;
+            const newCol = playerPos.col + colOffset;
+
+            if (
+                newRow >= 0 && newRow < rows &&
+                newCol >= 0 && newCol < cols &&
+                mazeLayout[newRow][newCol] !== '🚧'
+            ) {
+                playerPos = { row: newRow, col: newCol };
+                renderMaze();
+                checkWin();
+            }
+        }
+
+        function checkWin() {
+            if (mazeLayout[playerPos.row][playerPos.col] === '💘') {
+              document.getElementById('message').textContent = 'Happy Valentines Day Noob! 💝';
+                document.removeEventListener('keydown', handleKeydown);
+            }
+        }
+
+        function handleKeydown(event) {
+            switch (event.key) {
+                case 'ArrowUp': movePlayer(-1, 0); break;
+                case 'ArrowDown': movePlayer(1, 0); break;
+                case 'ArrowLeft': movePlayer(0, -1); break;
+                case 'ArrowRight': movePlayer(0, 1); break;
+            }
+        }
+
+        document.addEventListener('keydown', handleKeydown);
+        renderMaze();
+    </script>
+
+</body>
+</html>
